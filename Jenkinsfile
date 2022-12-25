@@ -11,7 +11,7 @@ pipeline{
 		stage('Build') {
 
 			steps {
-				sh 'docker build -t ahmedabdoahmed/cv-website:latest .'
+				sh 'docker build -t ahmedabdoahmed/cv-website:1.0 .'
 			}
 		}
 
@@ -25,7 +25,7 @@ pipeline{
 		stage('Push') {
 
 			steps {
-				sh 'docker push ahmedabdoahmed/cv-website:latest'
+				sh 'docker push ahmedabdoahmed/cv-website:1.0'
 			}
 		}
 	}
