@@ -1,17 +1,50 @@
-pipeline {
-    agent any
-    stages {
-        stage('build') {
+pipeline{
+
+	agent any
+
+	environment {
+		DOCKERHUB_CREDENTIALS=credentials('docker-hub-repo')
+	}
+
+	stages {
+
+		stage('Build') {
+
+			steps {
+				sh 'docker build -t ahmedabdoahmed/cv-website:1.3 .'
+			}
+		}
+
+		stage('Login') {
+
+			steps {
+				sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
+			}
+		}
+
+
+		stage('Push') {
+
+			steps {
+				sh 'docker push ahmedabdoahmed/cv-website:1.3'
+			}
+		}
+        stage('deploy') {
             steps {
                 script {
-                    echo "Building the application..."
+                   sshagent(['ec2-server-key']) {
+					def dockerCmd = 'docker run  -p 8082:80 -d  ahmedabdoahmed/cv-website:1.2'
+						sh "ssh -o StrictHostKeyChecking=no ec2-user@ec2-3-88-115-75.compute-1.amazonaws.com ${dockerCmd}"
+					}
                 }
             }
         }
-        stage('test') {
-            steps {
-                script {
-                    echo "Testing the application..."
-                }
-            }
-        }
+	}
+
+	post {
+		always {
+			sh 'docker logout'
+		}
+	}
+
+}
