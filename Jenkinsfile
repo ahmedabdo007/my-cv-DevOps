@@ -1,20 +1,28 @@
-pipeline{
+#!/usr/bin/env groovy
 
-	agent any
-
-	environment {
-		DOCKERHUB_CREDENTIALS=credentials('docker-hub-repo')
-	}
-
-	stages {
-
-
+pipeline {
+    agent any
+    stages {
+        stage('build') {
+            steps {
+                script {
+                    echo "Building the application..."
+                }
+            }
+        }
+        stage('test') {
+            steps {
+                script {
+                    echo "Testing the application..."
+                }
+            }
+        }
         stage('deploy') {
             steps {
                 script {
                    sshagent(['ec2-server-key']) {
-					def dockerCmd = 'docker run  -p 8081:80 -d  ahmedabdoahmed/cv-website:1.3'
-						sh "ssh -o StrictHostKeyChecking=no ubuntu@ec2-3-73-53-138.eu-central-1.compute.amazonaws.com ${dockerCmd}"
+					def dockerCmd = 'docker run  -p 8080:80 -d  ahmedabdoahmed/cv-website:1.3'
+						sh "ssh -o StrictHostKeyChecking=no ec2-user@ec2-54-87-237-145.compute-1.amazonaws.com ${dockerCmd}"
 					}
                 }
             }
