@@ -22,7 +22,7 @@ pipeline {
                 script {
                    sshagent(['ec2-server-key']) {
 					def dockerCmd = 'docker run  -p 8080:80 -d  ahmedabdoahmed/cv-website:1.3'
-						sh "ssh -o StrictHostKeyChecking=no ec2-user@ec2-54-87-237-145.compute-1.amazonaws.com ${dockerCmd}"
+						sh "ssh -o StrictHostKeyChecking=no ec2-user@ec2-54-87-237-145 ${dockerCmd}"
 					}
                 }
             }
