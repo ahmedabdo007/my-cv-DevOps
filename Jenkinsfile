@@ -20,9 +20,11 @@ pipeline {
         stage('deploy') {
             steps {
                 script {
+                   echo 'deploying docker image to ec2...'
+                   def ansible-playbookCmd = "ansible-playbook ansible-playbook.yml"
                    sshagent(['ec2-server-key']) {
-					def dockerCmd = 'docker run  -p 8080:80 -d  ahmedabdoahmed/cv-website:1.3'
-						sh "ssh -o StrictHostKeyChecking=no ubuntu@ec2-184-73-148-149.compute-1.amazonaws.com ${dockerCmd}"
+					sh "scp ansible-playbook.yml ubuntu@ec2-184-73-148-149.compute-1.amazonaws.com:/home/ubuntu"
+						sh "ssh -o StrictHostKeyChecking=no ubuntu@ec2-184-73-148-149.compute-1.amazonaws.com ${ansible-playbookCmd}"
 					}
                 }
             }
