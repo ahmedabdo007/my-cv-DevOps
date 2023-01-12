@@ -25,7 +25,6 @@ pipeline {
                    sshagent(['ec2-server-key']) {
 					sh "scp ansible-playbook.yml ubuntu@ec2-184-73-148-149.compute-1.amazonaws.com:/home/ubuntu"
                     sh "scp Dockerfile ubuntu@ec2-184-73-148-149.compute-1.amazonaws.com:/home/ubuntu"
-                    sh "scp my-cv ubuntu@ec2-184-73-148-149.compute-1.amazonaws.com:/home/ubuntu"
 						sh "ssh -o StrictHostKeyChecking=no ubuntu@ec2-184-73-148-149.compute-1.amazonaws.com ${ansibleCmd}"
 					}
                 }
