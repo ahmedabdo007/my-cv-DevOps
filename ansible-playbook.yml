@@ -16,14 +16,8 @@
 
   - name: build docker image from dockerfile
     command: docker build -t cv-img .
-
-  - name: create tag to image
-    command: docker tag cv-img ahmedabdoahmed/cv-website
-
-
-  - name: push image to dockerhub
-    command: docker push ahmedabdoahmed/cv-website 
     ignore_errors: yes
-    
+
+
   - name: run container from cv-img
-    command: docker run -d --name cv-container -p 5000:80 cv-img 
+    command: docker run  -p 8080:80 -d  ahmedabdoahmed/cv-website:1.3
