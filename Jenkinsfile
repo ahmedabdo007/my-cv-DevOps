@@ -1,41 +1,32 @@
-#!/usr/bin/env groovy
 
 pipeline {
     agent any
     stages {
-        stage('build') {
+        stage('build app') {
             steps {
-                script {
-                    echo "Building the application..."
-                }
+               script {
+                   echo "building the application..."
+               }
             }
         }
-        stage('test') {
+        stage('build image') {
             steps {
                 script {
-                    echo "Testing the application..."
+                    echo "building the docker image..."
                 }
             }
         }
         stage('deploy') {
+            environment {
+               AWS_ACCESS_KEY_ID = credentials('jenkins_aws_access_key_id')
+               AWS_SECRET_ACCESS_KEY = credentials('jenkins_aws_secret_access_key')
+            }
             steps {
                 script {
-                   echo 'deploying docker image to ec2...'
-                   def ansibleCmd = "ansible-playbook ansible-playbook.yml"
-                   sshagent(['ec2-server-key']) {
-					sh "scp ansible-playbook.yml ubuntu@ec2-184-73-148-149.compute-1.amazonaws.com:/home/ubuntu"
-                    sh "scp Dockerfile ubuntu@ec2-184-73-148-149.compute-1.amazonaws.com:/home/ubuntu"
-						sh "ssh -o StrictHostKeyChecking=no ubuntu@ec2-184-73-148-149.compute-1.amazonaws.com ${ansibleCmd}"
-					}
+                   echo 'deploying docker image...'
+                   sh 'kubectl create deployment nginx-deployment --image=nginx'
                 }
             }
         }
-	}
-
-	post {
-		always {
-			sh 'docker logout'
-		}
-	}
-
+    }
 }
