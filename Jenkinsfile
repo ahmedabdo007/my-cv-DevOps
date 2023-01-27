@@ -11,7 +11,7 @@ pipeline{
 		stage('Build') {
 
 			steps {
-				sh 'docker build -t ahmedabdoahmed/cv-website:1.4 .'
+				sh 'docker build -t ahmedabdoahmed/cv-website:1.6 .'
 			}
 		}
 
@@ -26,14 +26,14 @@ pipeline{
 		stage('Push') {
 
 			steps {
-				sh 'docker push ahmedabdoahmed/cv-website:1.4'
+				sh 'docker push ahmedabdoahmed/cv-website:1.6'
 			}
 		}
         stage('deploy') {
             steps {
                 script {
                    sshagent(['ec2-server-key']) {
-					def dockerCmd = 'docker run  -p 8080:80 -d  ahmedabdoahmed/cv-website:1.4'
+					def dockerCmd = 'docker run  -p 8080:80 -d  ahmedabdoahmed/cv-website:1.6'
 						sh "ssh -o StrictHostKeyChecking=no ubuntu@ec2-52-3-246-119.compute-1.amazonaws.com ${dockerCmd}"
 					}
                 }
